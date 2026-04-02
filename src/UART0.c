@@ -1,20 +1,17 @@
 #include "UART0.h"
 
-
-
 void UART0_init(void)
 {
     UBRR0H = 0x00;
-    UBRR0L = 207;           // 9,600 보율 설정
-    UCSR0A |= _BV(U2X0);    // 2배속 모드
-    UCSR0C = 0x06;          // 비동기, 8비트 데이터, 패리티 없음, 1비트 정지 비트
-    UCSR0B |= _BV(RXEN0);   // 수신 가능
-    UCSR0B |= _BV(TXEN0);   // 송신 가능
+    UBRR0L = 207;   // 9600 baud rate
+    UCSR0A |= _BV(U2X0); // 2배속
+    UCSR0C = 0x06; // 비동기, 8bit data, non-parity, 1bit stop bit
+    UCSR0B |= _BV(RXEN0);
+    UCSR0B |= _BV(TXEN0);
 }
 
-void UART0_transmit(char data)
-{
-    while(!(UCSR0A & (1<<UDRE0))); // 송신 대기
+void UART0_transmit(char data) {
+    while(!(UCSR0A & (1 << UDRE0))); //송신 대기
     UDR0 = data;
 }
 
@@ -46,3 +43,9 @@ void UART0_print_1_byte_number(uint8_t n)
         UART0_transmit(numString[i]);
 }
 
+void UART0_print_sensor_data(char *sensor_name, uint8_t int_part, uint8_t dec_part, char *unit)
+{
+    char buffer[40];
+    sprintf(buffer, "%s: %d.%d %s\r\n", sensor_name, int_part, dec_part, unit);
+    UART0_print_string(buffer); 
+}
