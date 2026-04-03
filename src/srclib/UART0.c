@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "UART0.h"
 
 void UART0_init(void)
